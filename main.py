@@ -13,6 +13,22 @@ class SAE23_Website(object):
     def index(self):
         page = createPage("\n<p>salut</p>")
         return page
+    
+    @cherrypy.expose
+    def displayUnitInformation(self, unitID: int):
+        unitInfo = displayUnitInformation(unitID)
+
+        pageContent = ""
+
+        pageContent += '<img src="/templates/medias/images/pngegg.png" alt="le picture of spider-man">\n<ul>'
+        stats = json.loads(unitInfo[4])
+        tags = json.loads(unitInfo[6])
+        for key in stats.keys():
+            pageContent += f'<li>{key.capitalize()}: {stats[key]}</li>'
+
+
+        page = createPage(unitInfo[1], pageContent)
+        return page
 
 # Change these depending on the local installation
 _dbUser = "root"
@@ -273,7 +289,7 @@ def createPage(title: str, content: str):
     for line in templateFile.readlines():
         returnContent += line
         if "PAGE_TITLE" in line:
-            returnContent += title
+            returnContent += '<h1 id="titre">' + title + '</h1>'
         if "PAGE_CONTAINER" in line:
             returnContent += content
     print(returnContent)
@@ -906,151 +922,148 @@ def displayUserList():
 
 if __name__ == "__main__":
     print("----- SAE 23 - Tanguy Petiaud -----")
-    publicMode = input("\nStart webserver? [y/n]: ")
+    keepGoing = True
+    while keepGoing:
+        print("Choose an input:")
+        print(" --- Unit Management ---")
+        print("1. View units list")
+        print("11. View specific unit information")
+        print("2. Create unit")
+        print("21. Modify unit")
+        print(" --- Army Management ---")
+        print("3. View armies list")
+        print("31. View specific army information")
+        print("4. Create army")
+        print("41. Modify army")
+        print(" --- User Management ---")
+        print("5. Display users list")
+        print("6. Create user")
+        print("61. Delete user")
+        print(" --- Game Management - Not implemented yet ---")
+        print("7. View recorded games")
+        print("71. View specific game information")
+        print("8. Create game")
+        print("81. Modify game")
+        print(" --- Webserver --- ")
+        print("9. Start webserver.")
+        print(" --- Database Management ---")
+        print("B. Backup database")
+        print("R. Restore database")
+        print("\n0. Quit")
+        menuChoice = input("Your choice: ")
 
-    if publicMode.lower() == 'y':
-        rootPath = os.path.abspath(os.getcwd())
-        conf = {
-            '/': {
-                'tools.sessions.on': True,
-                'tools.staticdir.root': rootPath
-                },
-            '/templates': {
-                'tools.staticdir.on': True,
-                'tools.staticdir.dir': './sources'
-        }
-        }
-        cherrypy.quickstart(SAE23_Website(), '/', conf)
+        match menuChoice:
+            case '1':
+                doFilters = input("Would you like to apply some filter? [y/n]: ")
+                if doFilters == 'y':
+                    faction = input("Enter faction: ")
+                    keywords = []
+                    keepGoing2 = True
+                    while keepGoing2:
+                        keyword = input("Enter keyword, leave blank to quit: ")
+                        if keyword == '':
+                            keepGoing2 = False
+                        else:
+                            keywords.append(keyword)
+                else:
+                    faction = ""
+                    keywords = []
+                filters = {"faction": faction, "keywords": keywords}
+                diplayUnitList(filters)                                                                                     ## Done
+            case '11':
+                try:
+                    unitID = int(input("Enter unit ID: "))
+                    displayUnitInformation(unitID)                                                                          ## Done
+                except ValueError:
+                    print("\nThe value entered is incorrect\n")
+                except:
+                    print("Unknown error")
+            case '2':
+                createUnit()                                                                                                ## Done
+            case '21':
+                unitID = input("Enter unit ID: ") 
+                modifyUnit(unitID)                                                                                          ## Done
 
-
-
-    else:
-        keepGoing = True
-        while keepGoing:
-            print("Choose an input:")
-            print(" --- Unit Management ---")
-            print("1. View units list")
-            print("11. View specific unit information")
-            print("2. Create unit")
-            print("21. Modify unit")
-            print(" --- Army Management ---")
-            print("3. View armies list")
-            print("31. View specific army information")
-            print("4. Create army")
-            print("41. Modify army")
-            print(" --- User Management ---")
-            print("5. Display users list")
-            print("6. Create user")
-            print("61. Delete user")
-            print(" --- Game Management - Not implemented yet ---")
-            print("7. View recorded games")
-            print("71. View specific game information")
-            print("8. Create game")
-            print("81. Modify game")
-            print(" --- Database Management ---")
-            print("B. Backup database")
-            print("R. Restore database")
-            print("\n0. Quit")
-            menuChoice = input("Your choice: ")
-
-            match menuChoice:
-                case '1':
-                    doFilters = input("Would you like to apply some filter? [y/n]: ")
-                    if doFilters == 'y':
-                        faction = input("Enter faction: ")
-                        keywords = []
-                        keepGoing2 = True
-                        while keepGoing2:
-                            keyword = input("Enter keyword, leave blank to quit: ")
-                            if keyword == '':
-                                keepGoing2 = False
-                            else:
-                                keywords.append(keyword)
-                    else:
-                        faction = ""
-                        keywords = []
-                    filters = {"faction": faction, "keywords": keywords}
-                    diplayUnitList(filters)                                                                                     ## Done
-                case '11':
+            case '3':
+                # doFilters = input("Would you like to apply some filter? [y/n]: ")
+                # if doFilters == 'y':
+                #     ## Filter choice
+                #     pass
+                filters = {}
+                diplayArmyList(filters)                                                                                     ## Done, add filters feature?
+            case '31':
+                idNotSet = True
+                while idNotSet:
                     try:
-                        unitID = int(input("Enter unit ID: "))
-                        displayUnitInformation(unitID)                                                                          ## Done
+                        armyID = int(input("Enter army ID: "))
+                        idNotSet = False
                     except ValueError:
-                        print("\nThe value entered is incorrect\n")
-                    except:
-                        print("Unknown error")
-                case '2':
-                    createUnit()                                                                                                ## Done
-                case '21':
-                    unitID = input("Enter unit ID: ") 
-                    modifyUnit(unitID)                                                                                          ## Done
+                        print("The value entered is incorrect")
+                displayArmyInformation(armyID)                                                                              ## Done
+            case '4':
+                createArmy()                                                                                                ## Done
+            case '41':
+                armyID = input("Enter army ID: ") 
+                modifyArmy(armyID)                                                                                          ## Done
 
-                case '3':
-                    # doFilters = input("Would you like to apply some filter? [y/n]: ")
-                    # if doFilters == 'y':
-                    #     ## Filter choice
-                    #     pass
-                    filters = {}
-                    diplayArmyList(filters)                                                                                     ## Done, add filters feature?
-                case '31':
-                    idNotSet = True
-                    while idNotSet:
-                        try:
-                            armyID = int(input("Enter army ID: "))
-                            idNotSet = False
-                        except ValueError:
-                            print("The value entered is incorrect")
-                    displayArmyInformation(armyID)                                                                              ## Done
-                case '4':
-                    createArmy()                                                                                                ## Done
-                case '41':
-                    armyID = input("Enter army ID: ") 
-                    modifyArmy(armyID)                                                                                          ## Done
+            case '5':
+                displayUserList()                                                                                           ## Done
+            case '6':
+                createUser()                                                                                                ## Done
+            case '61':
+                idNotSet = True
+                while idNotSet:
+                    try:
+                        userID = int(input("Enter user ID: "))
+                        idNotSet = False
+                    except ValueError:
+                        print("The value entered is incorrect")
+                deleteUser(userID)                                                                                                ## Done
 
-                case '5':
-                    displayUserList()                                                                                           ## Done
-                case '6':
-                    createUser()                                                                                                ## Done
-                case '61':
-                    idNotSet = True
-                    while idNotSet:
-                        try:
-                            userID = int(input("Enter user ID: "))
-                            idNotSet = False
-                        except ValueError:
-                            print("The value entered is incorrect")
-                    deleteUser(userID)                                                                                                ## Done
+            case '7':
+                doFilters = input("Would you like to apply some filter? [y/n]: ")
+                if doFilters == 'y':
+                    ## Filter choice
+                    pass
+                diplayGameList(filters)                                                                                     ## To do
+            case '71':
+                armyID = input("Enter game ID: ") 
+                diplayGameInformation(armyID)                                                                               ## To do
+            case '8':
+                createGame()                                                                                                ## To do
+            case '81':
+                gameID = input("Enter game ID: ") 
+                modifyGame(gameID)
 
-                case '7':
-                    doFilters = input("Would you like to apply some filter? [y/n]: ")
-                    if doFilters == 'y':
-                        ## Filter choice
-                        pass
-                    diplayGameList(filters)                                                                                     ## To do
-                case '71':
-                    armyID = input("Enter game ID: ") 
-                    diplayGameInformation(armyID)                                                                               ## To do
-                case '8':
-                    createGame()                                                                                                ## To do
-                case '81':
-                    gameID = input("Enter game ID: ") 
-                    modifyGame(gameID)
+            case '9':
+                rootPath = os.path.abspath(os.getcwd())
+                conf = {
+                    '/': {
+                        'tools.sessions.on': True,
+                        'tools.staticdir.root': rootPath
+                        },
+                    '/templates': {
+                        'tools.staticdir.on': True,
+                        'tools.staticdir.dir': './sources'
+                }
+                }
+                cherrypy.quickstart(SAE23_Website(), '/', conf)
 
-                case 'B' | 'b':
-                    backupDir = input("Enter target directory (leave blank to use default directory): ")
-                    if backupDir == "":
-                        backupDir = "DB backup"
-                    dbBackup(backupDir)
-                case 'R' | 'r':
-                    dbRestore()
+            case 'B' | 'b':
+                backupDir = input("Enter target directory (leave blank to use default directory): ")
+                if backupDir == "":
+                    backupDir = "DB backup"
+                dbBackup(backupDir)
+            case 'R' | 'r':
+                dbRestore()
 
-                case '9':
-                    testFunction()                                                                                              ## lol
-                case '0':
-                    keepGoing = False
-                    break
-            input("\nPress enter to continue...")
-            print()
-        print("And a good day to you!")
+            case '9':
+                testFunction()                                                                                              ## lol
+            case '0':
+                keepGoing = False
+                break
+        input("\nPress enter to continue...")
+        print()
+    print("And a good day to you!")
 
 
