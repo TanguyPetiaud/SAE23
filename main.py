@@ -11,14 +11,14 @@ import cherrypy
 class SAE23_Website(object):
     @cherrypy.expose
     def index(self):
-        page = createPage("\n<p>salut</p>")
+        page = createPage("", "SAE 23 - Tanguy Petiaud", "\n<p>salut</p>\n")
         return page
     
     @cherrypy.expose
-    def displayUnitInformation(self, unitID: int):
+    def unitInfo(self, unitID: int):
         unitInfo = displayUnitInformation(unitID)
-
         pageContent = ""
+        pageStyle = 'unitInfo'
 
         pageContent += '<img src="/templates/medias/images/pngegg.png" alt="le picture of spider-man">\n<ul>'
         stats = json.loads(unitInfo[4])
@@ -26,9 +26,33 @@ class SAE23_Website(object):
         for key in stats.keys():
             pageContent += f'<li>{key.capitalize()}: {stats[key]}</li>'
 
-
-        page = createPage(unitInfo[1], pageContent)
+        pageContent += '\n'
+        page = createPage(pageStyle, unitInfo[1], pageContent)
         return page
+    
+    @cherrypy.expose
+    def unitList(self):
+        unitList = diplayUnitList({"faction": "", "keywords": []})
+        pageContent = ""
+        pageTitle = "Available units"
+        pageStyle = 'unitList'
+
+        pageContent += '\n<ul class="unitList">'
+        for unit in unitList:
+            pageContent += '\n<li>'
+            pageContent += '\n<div class="unitPreview">'
+            pageContent += '\n<img src="/templates/medias/images/wojak.png" alt="unit protrait">'
+            pageContent += f'\n<p>{unit[1]}</p>'
+            pageContent += f'\n<a href=/unitInfo?unitID={unit[0]}>Unit info</a>'
+            pageContent += '\n</div>'
+            pageContent += '\n</li>'
+        pageContent += '\n</ul>'
+
+        pageContent += '\n'
+        page = createPage(pageStyle, pageTitle, pageContent)
+        return page
+
+
 
 # Change these depending on the local installation
 _dbUser = "root"
@@ -282,12 +306,14 @@ def testFunction():
     return None
 
 
-def createPage(title: str, content: str):
+def createPage(style: str, title: str, content: str):
     filePath = "./sources/index.html"
     templateFile = open(filePath, mode='r')
     returnContent = ""
     for line in templateFile.readlines():
         returnContent += line
+        if "PAGE_STYLE" in line:
+            returnContent += f'<link rel="stylesheet" type="text/css" href="/templates/css/{style}.css">'
         if "PAGE_TITLE" in line:
             returnContent += '<h1 id="titre">' + title + '</h1>'
         if "PAGE_CONTAINER" in line:
@@ -608,7 +634,8 @@ def diplayUnitList(filters):
     c.execute("SELECT * FROM unit")
     print(f"\n ----- Units available - Filters: {filters} -----")
     toPrint = []
-    for unitInfo in c.fetchall():
+    unitList = c.fetchall()
+    for unitInfo in unitList:
         unitTags = json.loads(unitInfo[6])
         toPrint.append(unitInfo)
         if filters["faction"] != "" and unitTags["faction"] != filters["faction"]:
@@ -623,7 +650,7 @@ def diplayUnitList(filters):
         print(f"{unit[1]} - Unit ID:{unit[0]}")
 
     dbDisconnect(db)
-    return None
+    return unitList
 
 
 def displayUnitInformation(unitID: int):
