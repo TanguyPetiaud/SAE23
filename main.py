@@ -31,11 +31,25 @@ class SAE23_Website(object):
         return page
     
     @cherrypy.expose
-    def unitList(self):
-        unitList = diplayUnitList({"faction": "", "keywords": []})
+    def unitList(self, faction = None, keyword = None):
+        if faction is None:
+            faction = ""
+        if keyword is None or keyword == '':
+            keyword = []
+        else:
+            keyword = [keyword]
+        unitList = diplayUnitList({"faction": faction, "keywords": keyword})
         pageContent = ""
         pageTitle = "Available units"
         pageStyle = 'unitList'
+
+        pageContent += f'{faction}, {keyword}'
+
+        pageContent += '<form action="/unitList">'
+        pageContent += '<input type="text" name="faction" placeholder="Faction">'
+        pageContent += '<input type="text" name="keyword" placeholder="Keyword">'
+        pageContent += '<input type="submit" value="Apply Filters">'
+        pageContent += '</form>'
 
         pageContent += '\n<ul class="unitList">'
         for unit in unitList:
@@ -51,6 +65,18 @@ class SAE23_Website(object):
         pageContent += '\n'
         page = createPage(pageStyle, pageTitle, pageContent)
         return page
+
+    @cherrypy.expose
+    def armyList(self):
+        pass
+
+    @cherrypy.expose
+    def armyInfo(self):
+        pass
+
+    @cherrypy.expose
+    def userList(self):
+        pass
 
 
 
@@ -650,7 +676,7 @@ def diplayUnitList(filters):
         print(f"{unit[1]} - Unit ID:{unit[0]}")
 
     dbDisconnect(db)
-    return unitList
+    return toPrint
 
 
 def displayUnitInformation(unitID: int):
