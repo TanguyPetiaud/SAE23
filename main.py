@@ -38,7 +38,7 @@ class SAE23_Website(object):
             keyword = []
         else:
             keyword = [keyword]
-        unitList = diplayUnitList({"faction": faction, "keywords": keyword})
+        unitList = displayUnitList({"faction": faction, "keywords": keyword})
         pageContent = ""
         pageTitle = "Available units"
         pageStyle = 'unitList'
@@ -68,15 +68,79 @@ class SAE23_Website(object):
 
     @cherrypy.expose
     def armyList(self):
-        pass
+        armyList = displayArmyList({})
+        pageStyle = 'armyList'
+        pageTitle = "Armies created"
+        pageContent = ""
+
+        pageContent += '\n<ul class="userList">'
+        for army in armyList:
+            pageContent += '\n<li>'
+            pageContent += '\n<div class="armyList">'
+            pageContent += f'\n<p>{army[2]}</p>'
+            pageContent += f'\n<a href=/armyInfo?armyID={army[0]}>Details</a>'
+            pageContent += '\n</div>'
+            pageContent += '\n</li>'
+        pageContent += '\n</ul>'
+
+        pageContent += '\n'
+        page = createPage(pageStyle, pageTitle, pageContent)
+        return page
 
     @cherrypy.expose
-    def armyInfo(self):
-        pass
+    def armyInfo(self, armyID: int):
+        linkList = displayArmyInformation(armyID)
+        pageStyle = 'armyInfo'
+        pageTitle = ""
+        pageContent = ""
+
+        if linkList is None:
+            pageContent += '<p>The army does not exist.</p>'
+        else:
+            armyInfo = linkList[1]
+            pageTitle = armyInfo[2]
+            linkList = linkList[0]
+        
+            pageContent += '\n<ul class="userList">'
+            unitCount = 0
+            for link in linkList:
+                pageContent += '\n<li>'
+                pageContent += '\n<div class="linkList">'
+                pageContent += f'\n<p>{link[3]} x {link[5]} - {link[6]*link[3]} points, {link[7]*link[3]} models</p>'
+                pageContent += f'\n<a href=/unitInfo?unitID={link[2]}>Details</a>'
+                pageContent += '\n</div>'
+                pageContent += '\n</li>'
+                unitCount += link[3]
+            pageContent += '\n</ul>'
+            pageContent += f'Total -  Units: {unitCount}, Points: {armyInfo[3]}, Models: {armyInfo[4]}'
+            
+
+
+        pageContent += '\n'
+        page = createPage(pageStyle, pageTitle, pageContent)
+        return page
 
     @cherrypy.expose
     def userList(self):
-        pass
+        userList = displayUserList()
+        pageStyle = 'userList'
+        pageTitle = "Registered users"
+        pageContent = ""
+
+        pageContent += '\n<ul class="userList">'
+        for user in userList:
+            pageContent += '\n<li>'
+            pageContent += '\n<div class="userDetails">'
+            pageContent += f'\n<p>{user[2]} {user[1]}</p>'
+            pageContent += f'\n<a href=/armyList?userID={user[0]}>Armies</a>'
+            pageContent += '\n</div>'
+            pageContent += '\n</li>'
+        pageContent += '\n</ul>'
+
+        pageContent += '\n'
+        page = createPage(pageStyle, pageTitle, pageContent)
+        return page
+
 
 
 
@@ -653,7 +717,7 @@ def modifyUnit(unitID: int):
                 return True
 
 
-def diplayUnitList(filters):
+def displayUnitList(filters):
     db = dbConnect()
     c = db.cursor()
 
@@ -863,7 +927,7 @@ def modifyArmy(armyID: int):
                 return None
 
 
-def diplayArmyList(filters):
+def displayArmyList(filters):
     if filters == {}:
         command = "select * from army"
     else:
@@ -874,12 +938,13 @@ def diplayArmyList(filters):
     c = db.cursor()
 
     c.execute(command)
+    armyList = c.fetchall()
     print("\n ----- Armies available -----")
-    for army in c.fetchall():
+    for army in armyList:
         print(f"{army[2]} - Army ID: {army[0]}")
 
     dbDisconnect(db)
-    return None
+    return armyList
 
 
 def displayArmyInformation(armyID: int):
@@ -894,13 +959,14 @@ def displayArmyInformation(armyID: int):
     print(f"\n ----- {armyInfo[2]} -----")
     c.execute(f"SELECT * FROM armylink JOIN unit WHERE ArmyId = {armyID} AND armylink.UnitId = unit.Id;")
     unitCount = 0
-    for link in c.fetchall():
+    linkList = c.fetchall()
+    for link in linkList:
         print(f"{link[3]} x {link[5]} - {link[6]*link[3]} points, {link[7]*link[3]} models")
         unitCount += link[3]
     print(f"Total -  Units: {unitCount}, Points: {armyInfo[3]}, Models: {armyInfo[4]}")
 
     dbDisconnect(db)
-    return None
+    return linkList, armyInfo
 
 
 
@@ -916,7 +982,7 @@ def modifyGame(gameID):
     return None
 
 
-def diplayGameList():
+def displayGameList():
     return None
 
 
@@ -963,10 +1029,11 @@ def displayUserList():
     c = db.cursor()
 
     c.execute("SELECT * FROM player")
+    userList = c.fetchall()
     print("\n ----- Registered users -----")
     for user in c.fetchall():
         print(f"{user[0]} - {user[2]} {user[1]}")
-    return None
+    return userList
 
 
 
@@ -1022,7 +1089,7 @@ if __name__ == "__main__":
                     faction = ""
                     keywords = []
                 filters = {"faction": faction, "keywords": keywords}
-                diplayUnitList(filters)                                                                                     ## Done
+                displayUnitList(filters)                                                                                     ## Done
             case '11':
                 try:
                     unitID = int(input("Enter unit ID: "))
@@ -1043,7 +1110,7 @@ if __name__ == "__main__":
                 #     ## Filter choice
                 #     pass
                 filters = {}
-                diplayArmyList(filters)                                                                                     ## Done, add filters feature?
+                displayArmyList(filters)                                                                                     ## Done, add filters feature?
             case '31':
                 idNotSet = True
                 while idNotSet:
@@ -1078,7 +1145,7 @@ if __name__ == "__main__":
                 if doFilters == 'y':
                     ## Filter choice
                     pass
-                diplayGameList(filters)                                                                                     ## To do
+                displayGameList(filters)                                                                                     ## To do
             case '71':
                 armyID = input("Enter game ID: ") 
                 diplayGameInformation(armyID)                                                                               ## To do
