@@ -1,0 +1,34 @@
+ul.userList {
+    display: grid;
+    row-gap: 50px;
+    list-style-type: none;
+}
+
+
+div.userDetails {
+    display: grid;
+    grid-template-columns: 150px 500px 150px;
+    list-style: none;
+    align-items: center;
+}
+
+.userDetails p {
+    grid-column: 2;
+
+    margin: 0 15px 0 15px;
+}
+
+.userDetails a {
+    grid-column: 3;
+
+    margin: 0 15px 0 15px;
+    padding: 10px 15px 10px 15px;
+    border-style: solid;
+    border-color: darkgreen;
+    border-width: 1px;
+    border-radius: 10px;
+}
+
+.userDetails img{
+    max-height: 50px;
+}

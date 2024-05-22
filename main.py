@@ -67,16 +67,16 @@ class SAE23_Website(object):
         return page
 
     @cherrypy.expose
-    def armyList(self):
-        armyList = displayArmyList({})
+    def armyList(self, ownerID = ""):
+        armyList = displayArmyList(ownerID)
         pageStyle = 'armyList'
         pageTitle = "Armies created"
         pageContent = ""
 
-        pageContent += '\n<ul class="userList">'
+        pageContent += '\n<ul class="armyList">'
         for army in armyList:
             pageContent += '\n<li>'
-            pageContent += '\n<div class="armyList">'
+            pageContent += '\n<div class="armyPreview">'
             pageContent += f'\n<p>{army[2]}</p>'
             pageContent += f'\n<a href=/armyInfo?armyID={army[0]}>Details</a>'
             pageContent += '\n</div>'
@@ -132,7 +132,7 @@ class SAE23_Website(object):
             pageContent += '\n<li>'
             pageContent += '\n<div class="userDetails">'
             pageContent += f'\n<p>{user[2]} {user[1]}</p>'
-            pageContent += f'\n<a href=/armyList?userID={user[0]}>Armies</a>'
+            pageContent += f'\n<a href=/armyList?ownerID={user[0]}>Armies</a>'
             pageContent += '\n</div>'
             pageContent += '\n</li>'
         pageContent += '\n</ul>'
@@ -145,8 +145,8 @@ class SAE23_Website(object):
 
 
 # Change these depending on the local installation
-_dbUser = "root"
-_dbPass = "root"
+_dbUser = "admin"
+_dbPass = "admin"
 _dbName = "sae23"
 
 
@@ -927,24 +927,27 @@ def modifyArmy(armyID: int):
                 return None
 
 
-def displayArmyList(filters):
-    if filters == {}:
-        command = "select * from army"
-    else:
-        print("Not implemented yet.")
-
+def displayArmyList(ownerID = ""):
+    command = "select * from army"
 
     db = dbConnect()
     c = db.cursor()
 
     c.execute(command)
     armyList = c.fetchall()
+    toPrint = []
+    if ownerID == "":
+        toPrint = armyList
+    else:
+        for army in armyList:
+            if army[1] == int(ownerID):
+                toPrint.append(army)
     print("\n ----- Armies available -----")
-    for army in armyList:
+    for army in toPrint:
         print(f"{army[2]} - Army ID: {army[0]}")
 
     dbDisconnect(db)
-    return armyList
+    return toPrint
 
 
 def displayArmyInformation(armyID: int):
@@ -1109,8 +1112,8 @@ if __name__ == "__main__":
                 # if doFilters == 'y':
                 #     ## Filter choice
                 #     pass
-                filters = {}
-                displayArmyList(filters)                                                                                     ## Done, add filters feature?
+                ownerID = int(input("Enter the owner ID: "))
+                displayArmyList(ownerID)                                                                                     ## Done, add filters feature?
             case '31':
                 idNotSet = True
                 while idNotSet:
@@ -1177,8 +1180,6 @@ if __name__ == "__main__":
             case 'R' | 'r':
                 dbRestore()
 
-            case '9':
-                testFunction()                                                                                              ## lol
             case '0':
                 keepGoing = False
                 break
