@@ -12,6 +12,7 @@ class SAE23_Website(object):
     @cherrypy.expose
     def index(self):
         page = createPage("", "SAE 23 - Tanguy Petiaud", "\n<p>salut</p>\n")
+        cherrypy.session["filters"] = []
         return page
     
     @cherrypy.expose
@@ -31,40 +32,115 @@ class SAE23_Website(object):
         return page
     
     @cherrypy.expose
-    def unitList(self, faction = None, keyword = None):
+    def unitList(self, faction = None, keywords = None):
         if faction is None:
             faction = ""
-        if keyword is None or keyword == '':
-            keyword = []
+        if keywords is None or keywords == '':
+            keywords = []
         else:
-            keyword = [keyword]
-        unitList = displayUnitList({"faction": faction, "keywords": keyword})
+            keywords = [keywords]
+        unitList = displayUnitList({"faction": faction, "keywords": keywords})
         pageContent = ""
         pageTitle = "Available units"
         pageStyle = 'unitList'
 
-        pageContent += f'{faction}, {keyword}'
+        pageContent += f'{faction}, {keywords}'
+        pageContent += str(unitList)
 
-        pageContent += '<form action="/unitList">'
-        pageContent += '<input type="text" name="faction" placeholder="Faction">'
-        pageContent += '<input type="text" name="keyword" placeholder="Keyword">'
-        pageContent += '<input type="submit" value="Apply Filters">'
-        pageContent += '</form>'
+        pageContent += f'''
+            <input type="text" id="factionInput" placeholder="Faction" value={faction}>
+            <button onclick="setFaction()">Set faction</button>
+            <input type="text" id="keywordInput" placeholder="Keyword">
+            <button onclick="addKeyword()">Add keyword</button>
+            <button onclick="clearKeywords()">Clear keywords</button>
+            <button onclick="filterUnits()">test this shit</button>
+        '''
 
-        pageContent += '\n<ul class="unitList">'
+
+        pageContent += '''
+            <script>'''
+        unitListCopy = []
         for unit in unitList:
-            pageContent += '\n<li>'
-            pageContent += '\n<div class="unitPreview">'
-            pageContent += '\n<img src="/templates/medias/images/wojak.png" alt="unit protrait">'
-            pageContent += f'\n<p>{unit[1]}</p>'
-            pageContent += f'\n<a href=/unitInfo?unitID={unit[0]}>Unit info</a>'
-            pageContent += '\n</div>'
-            pageContent += '\n</li>'
-        pageContent += '\n</ul>'
+            unitCopy = []
+            unitCopy.append(unit[0])
+            unitCopy.append(unit[1])
+            unitCopy.append(unit[2])
+            unitCopy.append(unit[3])
+            unitCopy.append(unit[4])
+            unitCopy.append(unit[5])
+            unitCopy.append(json.loads(unit[6]))
+            unitListCopy.append(unitCopy)
+        pageContent += f'var unitList = {unitListCopy};'
+        pageContent += '''
+                var faction = "";
+                var keywords = [];
+
+                function setFaction() {
+                    faction = document.getElementById("factionInput").value
+                    console.log(faction)
+                }
+
+                function addKeyword() {
+                    keywords.push(document.getElementById("keywordInput").value)
+                    console.log(keywords)
+                    alert("Keywords are now: " + keywords)
+                }
+
+                function clearKeywords() {
+                    keywords = []
+                    console.log(keywords)
+                    alert("Keywords cleared")
+                }
+
+                function filterUnits() {
+                    console.log(unitList)
+                    let addUnit = false
+                    let toPrint = []
+
+                    for (let i=0; i<unitList.length; i++) {
+                        addUnit = false
+                        for (let j=0; j<unitList[i][6]["keywords"].length; j++) {
+                            console.log(unitList[i][6]["keywords"][j])
+                            console.log(keywords)
+                            if (keywords.includes(unitList[i][6]["keywords"][j])) {
+                                addUnit = true
+                            }
+                        }
+                        if (addUnit == true) {
+                            toPrint.push(unitList[i])
+                        }
+                    }
+
+                    console.log(toPrint)
+                }
+            </script>
+        '''
+
+        pageContent += ""
+
+
+
+
+
+        ## pageContent += '\n<ul class="unitList">'
+        ## for unit in unitList:
+        ##     pageContent += '\n<li>'
+        ##     pageContent += '\n<div class="unitPreview">'
+        ##     pageContent += '\n<img src="/templates/medias/images/wojak.png" alt="unit protrait">'
+        ##     pageContent += f'\n<p>{unit[1]}</p>'
+        ##     pageContent += f'\n<a href=/unitInfo?unitID={unit[0]}>Unit info</a>'
+        ##     pageContent += '\n</div>'
+        ##     pageContent += '\n</li>'
+        ## pageContent += '\n</ul>'
 
         pageContent += '\n'
         page = createPage(pageStyle, pageTitle, pageContent)
         return page
+    
+    @cherrypy.expose
+    def updateFilters(self, action, faction, newKeyword):
+        cherrypy.session["filters"].append(newKeyword)
+        raise cherrypy.HTTPRedirect(f"""/unitList?faction={faction}&keywords={cherrypy.session["filters"]}""")
 
     @cherrypy.expose
     def armyList(self, ownerID = ""):
@@ -145,8 +221,8 @@ class SAE23_Website(object):
 
 
 # Change these depending on the local installation
-_dbUser = "admin"
-_dbPass = "admin"
+_dbUser = "root"
+_dbPass = "root"
 _dbName = "sae23"
 
 
