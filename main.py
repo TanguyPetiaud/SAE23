@@ -44,12 +44,10 @@ class SAE23_Website(object):
         pageTitle = "Available units"
         pageStyle = 'unitList'
 
-        pageContent += f'{faction}, {keywords}'
-        pageContent += str(unitList)
-
         pageContent += f'''
             <input type="text" id="factionInput" placeholder="Faction" value={faction}>
             <button onclick="setFaction()">Set faction</button>
+            <button onclick="clearFaction()">Clear faction</button>
             <input type="text" id="keywordInput" placeholder="Keyword">
             <button onclick="addKeyword()">Add keyword</button>
             <button onclick="clearKeywords()">Clear keywords</button>
@@ -77,37 +75,65 @@ class SAE23_Website(object):
 
                 function setFaction() {
                     faction = document.getElementById("factionInput").value
-                    console.log(faction)
+                    console.log("Faction is: " + faction)
+                }
+
+                function clearFaction() {
+                    faction = ""
+                    console.log("Faction is: " + keywords)
                 }
 
                 function addKeyword() {
                     keywords.push(document.getElementById("keywordInput").value)
-                    console.log(keywords)
-                    alert("Keywords are now: " + keywords)
+                    console.log("Keywords are: " + keywords)
                 }
 
                 function clearKeywords() {
                     keywords = []
-                    console.log(keywords)
-                    alert("Keywords cleared")
+                    console.log("Keywords are: " + keywords)
                 }
 
                 function filterUnits() {
-                    console.log(unitList)
                     let addUnit = false
                     let toPrint = []
+                    let ul = document.getElementById("unitList")
+                    ul.innerHTML = ''
+
+                    console.log(keywords)
 
                     for (let i=0; i<unitList.length; i++) {
-                        addUnit = false
-                        for (let j=0; j<unitList[i][6]["keywords"].length; j++) {
-                            console.log(unitList[i][6]["keywords"][j])
-                            console.log(keywords)
-                            if (keywords.includes(unitList[i][6]["keywords"][j])) {
-                                addUnit = true
+                        addUnit = true
+                        for (let j=0; j<keywords.length; j++) {
+                            if (unitList[i][6]["keywords"].includes(keywords[j]) == false) {
+                                addUnit = false
                             }
                         }
+                        if (unitList[i][6]["faction"] != faction && faction != "") {
+                            addUnit = false
+                        }
+
                         if (addUnit == true) {
                             toPrint.push(unitList[i])
+                            li = document.createElement("li")
+                            div = document.createElement("div")
+                            div.setAttribute("class", "unitPreview")
+
+                            img = document.createElement("img")
+                            img.setAttribute("src", "/templates/medias/images/wojak.png")
+                            img.setAttribute("alt", "unit protrait")
+                            div.appendChild(img)
+                            
+                            p = document.createElement("p")
+                            p.appendChild(document.createTextNode(unitList[i][1]))
+                            div.appendChild(p)
+
+                            a = document.createElement("a")
+                            a.setAttribute("href", "/unitInfo?unitID="+unitList[i][0])
+                            a.appendChild(document.createTextNode("Unit info"))
+                            div.appendChild(a)
+
+                            li.appendChild(div)
+                            ul.appendChild(li)
                         }
                     }
 
@@ -122,7 +148,7 @@ class SAE23_Website(object):
 
 
 
-        ## pageContent += '\n<ul class="unitList">'
+        pageContent += '\n<ul id="unitList">'
         ## for unit in unitList:
         ##     pageContent += '\n<li>'
         ##     pageContent += '\n<div class="unitPreview">'
@@ -131,7 +157,7 @@ class SAE23_Website(object):
         ##     pageContent += f'\n<a href=/unitInfo?unitID={unit[0]}>Unit info</a>'
         ##     pageContent += '\n</div>'
         ##     pageContent += '\n</li>'
-        ## pageContent += '\n</ul>'
+        pageContent += '\n</ul>'
 
         pageContent += '\n'
         page = createPage(pageStyle, pageTitle, pageContent)
@@ -221,8 +247,8 @@ class SAE23_Website(object):
 
 
 # Change these depending on the local installation
-_dbUser = "root"
-_dbPass = "root"
+_dbUser = "admin"
+_dbPass = "admin"
 _dbName = "sae23"
 
 
