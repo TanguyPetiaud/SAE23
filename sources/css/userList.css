@@ -1,4 +1,4 @@
-ul.userList {
+ul#userList {
     display: grid;
     row-gap: 50px;
     list-style-type: none;
@@ -31,4 +31,5 @@ div.userDetails {
 
 .userDetails img{
     max-height: 50px;
+    background-color: #cccccc;
 }

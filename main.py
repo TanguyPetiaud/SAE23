@@ -20,9 +20,9 @@ class SAE23_Website(object):
         pageContent = ""
         pageStyle = 'unitInfo'
 
-        pageContent += '<img src="/templates/medias/images/pngegg.png" alt="le picture of spider-man">\n<ul>'
         stats = json.loads(unitInfo[4])
         tags = json.loads(unitInfo[6])
+        pageContent += f'<img src="/templates/medias/images/{tags["faction"]}.svg" alt="le picture of spider-man">\n<ul>'
         for key in stats.keys():
             pageContent += f'<li>{key.capitalize()}: {stats[key]}</li>'
 
@@ -50,7 +50,7 @@ class SAE23_Website(object):
             <input type="text" id="keywordInput" placeholder="Keyword">
             <button onclick="addKeyword()">Add keyword</button>
             <button onclick="clearKeywords()">Clear keywords</button>
-            <button onclick="filterUnits()">test this shit</button>
+            <button onclick="filterUnits()">Display units</button>
         '''
 
 
@@ -118,7 +118,7 @@ class SAE23_Website(object):
                             div.setAttribute("class", "unitPreview")
 
                             img = document.createElement("img")
-                            img.setAttribute("src", "/templates/medias/images/wojak.png")
+                            img.setAttribute("src", "/templates/medias/images/" + unitList[i][6]["faction"] + ".svg")
                             img.setAttribute("alt", "unit protrait")
                             div.appendChild(img)
                             
@@ -176,7 +176,7 @@ class SAE23_Website(object):
             </form>
         '''
 
-        pageContent += '\n<ul class="armyList">'
+        pageContent += '\n<ul id="armyList">'
         for army in armyList:
             pageContent += '\n<li>'
             pageContent += '\n<div class="armyPreview">'
@@ -204,7 +204,7 @@ class SAE23_Website(object):
             pageTitle = armyInfo[2]
             linkList = linkList[0]
         
-            pageContent += '\n<ul class="userList">'
+            pageContent += '\n<ul id="userList">'
             unitCount = 0
             for link in linkList:
                 pageContent += '\n<li>'
@@ -230,7 +230,7 @@ class SAE23_Website(object):
         pageTitle = "Registered users"
         pageContent = ""
 
-        pageContent += '\n<ul class="userList">'
+        pageContent += '\n<ul id="userList">'
         for user in userList:
             pageContent += '\n<li>'
             pageContent += '\n<div class="userDetails">'
@@ -271,11 +271,6 @@ if __name__ == "__main__":
         print("5. Display users list")
         print("6. Create user")
         print("61. Delete user")
-        print(" --- Game Management - Not implemented yet ---")
-        print("7. View recorded games")
-        print("71. View specific game information")
-        print("8. Create game")
-        print("81. Modify game")
         print(" --- Webserver --- ")
         print("9. Start webserver.")
         print(" --- Database Management ---")
@@ -351,21 +346,6 @@ if __name__ == "__main__":
                     except ValueError:
                         print("The value entered is incorrect")
                 dbUtils.deleteUser(userID)                                                                                                ## Done
-
-            case '7':
-                doFilters = input("Would you like to apply some filter? [y/n]: ")
-                if doFilters == 'y':
-                    ## Filter choice
-                    pass
-                dbUtils.displayGameList(filters)                                                                                     ## To do
-            case '71':
-                armyID = input("Enter game ID: ") 
-                dbUtils.diplayGameInformation(armyID)                                                                               ## To do
-            case '8':
-                dbUtils.createGame()                                                                                                ## To do
-            case '81':
-                gameID = input("Enter game ID: ") 
-                dbUtils.modifyGame(gameID)
 
             case '9':
                 rootPath = os.path.abspath(os.getcwd())

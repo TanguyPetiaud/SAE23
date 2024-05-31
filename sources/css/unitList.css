@@ -1,14 +1,14 @@
-ul.unitList {
+ul#unitList {
     display: grid;
     row-gap: 50px;
     list-style-type: none;
+    list-style: none;
 }
 
 
 div.unitPreview {
     display: grid;
     grid-template-columns: 150px 500px 150px;
-    list-style: none;
     align-items: center;
 }
 
@@ -31,4 +31,6 @@ div.unitPreview {
 
 .unitPreview img{
     max-height: 50px;
+    max-width: 50px !important;
+    background-color: #cccccc;
 }

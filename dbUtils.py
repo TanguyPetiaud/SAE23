@@ -8,8 +8,8 @@ import json
 import csv
 
 # Change these depending on the local installation
-_dbUser = "admin"
-_dbPass = "admin"
+_dbUser = "root"
+_dbPass = "root"
 _dbName = "sae23"
 
 
@@ -243,20 +243,6 @@ def dbRestore():
     print(" --- Restore complete --- ")
     return None
 
-
-
-def testFunction():
-    db = dbConnect()
-    c = db.cursor()
-    c.execute("select * from unit;")
-    print(c.fetchall())
-
-    # c.execute("INSERT INTO `unit` (`Id`, `Name`, `Points`, `Models`, `Stats`, `Price`, `Tags`) VALUES (NULL, 'test2', '10', '2', '{}', '15.2', '{}')")
-    # c.execute("select * from unit;")
-    # print(c.fetchall())
-
-    dbDisconnect(db)
-    return None
 
 
 def createPage(style: str, title: str, content: str):
@@ -639,9 +625,6 @@ def displayUnitInformation(unitID: int):
 ## ----- Army management -----
 ## ---------------------------
 def createArmy():
-    # showUsers = input("Would you like to see the available users? [y/n]: ")
-    # if showUsers.lower() == 'y':
-    #     displayUserList()
     ownerNotSet = True
     while ownerNotSet:
         try:
@@ -700,9 +683,6 @@ def modifyArmy(armyID: int):
                 c.execute(f"UPDATE army SET Name = '{armyName}' WHERE Id = {armyID}")
                 dbDisconnect(db)
             case '2':
-                # showUsers = input("Would you like to see the available users? [y/n]: ")
-                # if showUsers.lower() == 'y':
-                #     displayUserList()
                 ownerNotSet = True
                 while ownerNotSet:
                     try:
