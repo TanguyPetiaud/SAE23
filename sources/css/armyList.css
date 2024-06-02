@@ -1,3 +1,48 @@
+/* --- General --- */
+#general_stuff {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto auto;
+    row-gap: 20px;
+    column-gap: 50px;
+    justify-items: center;
+}
+
+
+/* --- Form --- */
+button {
+    background-color: black;
+    color: green;
+    font-family: data-gothic;
+
+    padding: 10px 15px 10px 15px;
+
+    border-style: solid;
+    border-color: darkgreen;
+    border-width: 1px;
+    border-radius: 10px;
+    
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: green;
+    color: white;
+    background-image: url(/templates/medias/images/scanlines.png);
+}
+
+input {
+    background-color: black;
+    color: green;
+    font-family: data-gothic;
+    font-size: large;
+    border: none;
+    padding: 10px 15px 10px 15px;
+}
+
+
+
+/* --- List --- */
 ul#armyList {
     display: grid;
     row-gap: 50px;
@@ -7,19 +52,19 @@ ul#armyList {
 
 div.armyPreview {
     display: grid;
-    grid-template-columns: 150px 500px 150px;
+    grid-template-columns: 500px 150px;
     list-style: none;
     align-items: center;
 }
 
 .armyPreview p {
-    grid-column: 2;
+    grid-column: 1;
 
     margin: 0 15px 0 15px;
 }
 
 .armyPreview a {
-    grid-column: 3;
+    grid-column: 2;
 
     margin: 0 15px 0 15px;
     padding: 10px 15px 10px 15px;

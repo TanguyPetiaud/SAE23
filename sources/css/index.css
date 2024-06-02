@@ -1,7 +1,7 @@
 /* ----- General Stuff ----- */
 @font-face {
     font-family: data-gothic;
-    src:url("../autres/JlsdatagothicCnc-yyz3.otf");
+    src:url("/templates/autres/JlsdatagothicCnc-yyz3.otf");
 }
 
 
@@ -9,7 +9,7 @@
 body {
     font-family: data-gothic;
     color: lightgray;
-    background-image: url(../medias/images/scanlines.png);
+    background-image: url(/templates/medias/images/scanlines.png);
     background-blend-mode: multiply;
     background-attachment: fixed;
     background-color: rgb(7, 19, 7);
@@ -60,7 +60,7 @@ header ul li a {
 
 header ul li a:hover {
     background-color: green;
-    background-image: url(../medias/images/scanlines.png);
+    background-image: url(/templates/medias/images/scanlines.png);
 }
 
 @media (max-width: 1100px) {
@@ -109,6 +109,10 @@ header ul li a:hover {
     max-width: 720px;
     display: block;
     margin: auto;
+}
+
+h2 {
+    text-align: center;
 }
 
 

@@ -10,8 +10,10 @@ import dbUtils
 class SAE23_Website(object):
     @cherrypy.expose
     def index(self):
-        page = dbUtils.createPage("", "SAE 23 - Tanguy Petiaud", "\n<p>salut</p>\n")
-        cherrypy.session["filters"] = []
+        pageContent = ""
+        pageContent += '<h2>Warhammer 40.000 Army Helper</h2>'
+        pageContent += '<img src="/templates/medias/images/main.jpeg">'
+        page = dbUtils.createPage("", "SAE 23 - Tanguy Petiaud", pageContent)
         return page
     
     @cherrypy.expose
@@ -50,7 +52,7 @@ class SAE23_Website(object):
             <input type="text" id="keywordInput" placeholder="Keyword">
             <button onclick="addKeyword()">Add keyword</button>
             <button onclick="clearKeywords()">Clear keywords</button>
-            <button onclick="filterUnits()">Display units</button>
+            <button id="submitButton" onclick="filterUnits()">Display units</button>
         '''
 
 
@@ -143,19 +145,7 @@ class SAE23_Website(object):
 
         pageContent += ""
 
-
-
-
-
         pageContent += '\n<ul id="unitList">'
-        ## for unit in unitList:
-        ##     pageContent += '\n<li>'
-        ##     pageContent += '\n<div class="unitPreview">'
-        ##     pageContent += '\n<img src="/templates/medias/images/wojak.png" alt="unit protrait">'
-        ##     pageContent += f'\n<p>{unit[1]}</p>'
-        ##     pageContent += f'\n<a href=/unitInfo?unitID={unit[0]}>Unit info</a>'
-        ##     pageContent += '\n</div>'
-        ##     pageContent += '\n</li>'
         pageContent += '\n</ul>'
 
         pageContent += '\n'
@@ -234,7 +224,7 @@ class SAE23_Website(object):
         for user in userList:
             pageContent += '\n<li>'
             pageContent += '\n<div class="userDetails">'
-            pageContent += f'\n<p>{user[0]}</p>'
+            pageContent += f'\n<p>ID: {user[0]}</p>'
             pageContent += f'\n<p>{user[2]} {user[1]}</p>'
             pageContent += f'\n<a href=/armyList?ownerID={user[0]}>Armies</a>'
             pageContent += '\n</div>'

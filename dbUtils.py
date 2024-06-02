@@ -24,6 +24,9 @@ def dbDisconnect(db):
 
 
 def dbBackup(backupDir: str):
+    '''
+    Permet de créer un fichier CSV contenant l'état actuel de la base de données.
+    '''
     db = dbConnect()
     c = db.cursor()
 
@@ -115,6 +118,9 @@ def dbBackup(backupDir: str):
     return None
 
 def dbRestore():
+    '''
+    Crée la base de donnée vide et permet d'insérer des données à partir d'un CSV.
+    '''
     db = pymysql.connect(host="localhost", user=f"{_dbUser}", passwd=f"{_dbPass}")
     c = db.cursor()
     database = f"{_dbName}"
@@ -246,12 +252,18 @@ def dbRestore():
 
 
 def createPage(style: str, title: str, content: str):
+    '''
+    Crée et retourne un page html.\n
+    style spécifie un chemin vers un fichier css,
+    title spécifie le titre à afficher sur la page,
+    content spécifie le contenu spécifique de la page.
+    '''
     filePath = "./sources/index.html"
     templateFile = open(filePath, mode='r')
     returnContent = ""
     for line in templateFile.readlines():
         returnContent += line
-        if "PAGE_STYLE" in line:
+        if style != "" and "PAGE_STYLE" in line:
             returnContent += f'<link rel="stylesheet" type="text/css" href="/templates/css/{style}.css">'
         if "PAGE_TITLE" in line:
             returnContent += '<h1 id="titre">' + title + '</h1>'
@@ -266,6 +278,9 @@ def createPage(style: str, title: str, content: str):
 ## ----- Unit management -----
 ## ---------------------------
 def createUnit():
+    '''
+    Crée une unité et retourne son ID.
+    '''
     print()
     name = input("Enter unit name: ")
 
@@ -389,6 +404,9 @@ def createUnit():
 
 
 def modifyUnit(unitID: int):
+    '''
+    Permet de modifier les caractéristiques d'une unité, à travers son ID.
+    '''
     db = dbConnect()
     c = db.cursor()
 
@@ -567,6 +585,10 @@ def modifyUnit(unitID: int):
 
 
 def displayUnitList(filters):
+    '''
+    Retourne une liste des unités qui correspondent aux filtres.
+    Les filtres sont un dictionnaire: {"faction": "", "keywords": []}.
+    '''
     db = dbConnect()
     c = db.cursor()
 
@@ -593,6 +615,9 @@ def displayUnitList(filters):
 
 
 def displayUnitInformation(unitID: int):
+    '''
+    Retourne les informations détaillées sur une unité, à travers son ID.
+    '''
     db = dbConnect()
     c = db.cursor()
 
@@ -625,6 +650,9 @@ def displayUnitInformation(unitID: int):
 ## ----- Army management -----
 ## ---------------------------
 def createArmy():
+    '''
+    Crée une armée et retourne son ID.
+    '''
     ownerNotSet = True
     while ownerNotSet:
         try:
@@ -652,10 +680,13 @@ def createArmy():
     except Exception as e:
         print("\nUnknown error: ", e)
 
-    return None
+    return int(returnValue[0])
 
 
 def modifyArmy(armyID: int):
+    '''
+    Permet de modifier les caractéristiques d'une armée, à travers son ID.
+    '''
     db = dbConnect()
     c = db.cursor()
 
@@ -771,6 +802,10 @@ def modifyArmy(armyID: int):
 
 
 def displayArmyList(ownerID = ""):
+    '''
+    Retourne une liste des armées. Cette liste peut être filtrée en fonction de l'ID du créateur de l'armée.
+    '''
+
     command = "select * from army"
 
     db = dbConnect()
@@ -794,6 +829,10 @@ def displayArmyList(ownerID = ""):
 
 
 def displayArmyInformation(armyID: int):
+    '''
+    Retourne les informations détaillées sur une armée, à travers son ID.
+    '''
+
     db = dbConnect()
     c = db.cursor()
 
@@ -821,6 +860,10 @@ def displayArmyInformation(armyID: int):
 ## ----- User management -----
 ## ---------------------------
 def createUser():
+    '''
+    Crée un utilisateur.
+    '''
+
     name = input("Enter user last name: ")
     firstName = input("Enter user first name: ")
 
@@ -834,6 +877,9 @@ def createUser():
 
 
 def deleteUser(userID: int):
+    '''
+    Supprime un utilisateur en fonction de son ID.
+    '''
     db = dbConnect()
     c = db.cursor()
 
@@ -850,6 +896,9 @@ def deleteUser(userID: int):
 
 
 def displayUserList():
+    '''
+    Retourne un liste des utilisateurs.
+    '''
     db = dbConnect()
     c = db.cursor()
 
