@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 05, 2024 at 09:33 PM
+-- Generation Time: Jun 03, 2024 at 12:41 PM
 -- Server version: 5.7.11
 -- PHP Version: 5.6.18
 
@@ -41,8 +41,8 @@ CREATE TABLE `army` (
 --
 
 INSERT INTO `army` (`Id`, `Owner`, `Name`, `Points`, `Models`, `Price`, `Tags`) VALUES
-(7, 2, '  testArmy', 815, 17, 279.99, '  {}'),
-(11, 2, '  Imperial Guard Regiment', 530, 38, 322.5, '  {}');
+(7, 2, '   testArmy', 815, 17, 279.99, '   {}'),
+(11, 2, '   Imperial Guard Regiment', 530, 38, 322.5, '   {}');
 
 -- --------------------------------------------------------
 
@@ -74,33 +74,6 @@ INSERT INTO `armylink` (`Id`, `ArmyId`, `UnitId`, `Quantity`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `game`
---
-
-CREATE TABLE `game` (
-  `Id` int(11) NOT NULL,
-  `Date` date NOT NULL,
-  `Rules` varchar(50) NOT NULL,
-  `Length` int(11) NOT NULL,
-  `Winner` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gameplayer`
---
-
-CREATE TABLE `gameplayer` (
-  `Id` int(11) NOT NULL,
-  `GameId` int(11) NOT NULL,
-  `PlayerId` int(11) NOT NULL,
-  `ArmyId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `player`
 --
 
@@ -115,10 +88,10 @@ CREATE TABLE `player` (
 --
 
 INSERT INTO `player` (`Id`, `Name`, `FirstName`) VALUES
-(1, '  Petiaud', '  Tanguy'),
-(2, '  Cavill', '  Henry'),
-(3, '  Calgar', '  Marneus'),
-(4, '  the Betrayer', '  Kharn');
+(1, '   Petiaud', '   Tanguy'),
+(2, '   Cavill', '   Henry'),
+(3, '   Calgar', '   Marneus'),
+(4, '   the Betrayer', '   Kharn');
 
 -- --------------------------------------------------------
 
@@ -141,14 +114,14 @@ CREATE TABLE `unit` (
 --
 
 INSERT INTO `unit` (`Id`, `Name`, `Points`, `Models`, `Stats`, `Price`, `Tags`) VALUES
-(2, '  Battle Sisters Squad', 100, 10, '  {"movement": 6, "toughness": 3, "armour save": 3, "wounds": 1, "leadership": 7, "objective control": 2, "invulnerable save": 6}', 39.99, '  {"faction": "Adepta Sororitas", "keywords": ["Infantry", "Battleline", "Grenades", "Imperium"]}'),
-(3, '  Eightbound', 145, 3, '  {"movement": 9, "toughness": 6, "armour save": 3, "wounds": 3, "leadership": 6, "objective control": 1, "invulnerable save": 5}', 50, '  {"faction": "World Eaters", "keywords": ["Chaos", "Space Marines", "Khorne", "Infantry", "Daemon"]}'),
-(5, '  Knight Paladin', 425, 1, '  {"movement": 10, "toughness": 12, "armour save": 3, "wounds": 22, "leadership": 6, "objective control": 10, "invulnerable save": 5}', 140, '  {"faction": "Imperial Knights", "keywords": ["Vehicle", "Walker", "Titanic", "Towering", "Questoris", "Character", "Imperium"]}'),
-(8, '  Cadian Shock Troops', 60, 10, '  {"movement": 6, "toughness": 3, "armour save": 5, "wounds": 1, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 40, '  {"faction": "Astra Militarum", "keywords": ["Infantry", "Battleline", "Imperium", "Grenades", "Regiment", "Platoon", "Cadian"]}'),
-(9, '  Chimera', 70, 1, '  {"movement": 10, "toughness": 9, "armour save": 3, "wounds": 11, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 45, '  {"faction": "Astra Militarum", "keywords": ["Vehicle", "Imperium", "Squadron", "Transport", "Dedicated Transport", "Smoke"]}'),
-(10, '  Commissar', 30, 1, '  {"movement": 6, "toughness": 3, "armour save": 5, "wounds": 3, "leadership": 6, "objective control": 1, "invulnerable save": 5}', 30, '  {"faction": "Astra Militarum", "keywords": ["Infantry", "Character", "Imperium", "Officer"]}'),
-(11, '  Field Ordnance Battery', 120, 2, '  {"movement": 4, "toughness": 5, "armour save": 4, "wounds": 6, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 42.5, '  {"faction": "Astra Militarum", "keywords": ["Infantry", "Artillery", "Imperium", "Grenades", "Regiment"]}'),
-(12, '  Heavy Weapons Squad', 60, 3, '  {"movement": 6, "toughness": 3, "armour save": 5, "wounds": 2, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 40, '  {"faction": "Astra Militarum", "keywords": ["Infantry", "Imperium", "Grenades", "Regiment"]}');
+(2, '   Battle Sisters Squad', 100, 10, '   {"movement": 6, "toughness": 3, "armour save": 3, "wounds": 1, "leadership": 7, "objective control": 2, "invulnerable save": 6}', 39.99, '   {"faction": "Adepta Sororitas", "keywords": ["Infantry", "Battleline", "Grenades", "Imperium"]}'),
+(3, '   Eightbound', 145, 3, '   {"movement": 9, "toughness": 6, "armour save": 3, "wounds": 3, "leadership": 6, "objective control": 1, "invulnerable save": 5}', 50, '   {"faction": "World Eaters", "keywords": ["Chaos", "Space Marines", "Khorne", "Infantry", "Daemon"]}'),
+(5, '   Knight Paladin', 425, 1, '   {"movement": 10, "toughness": 12, "armour save": 3, "wounds": 22, "leadership": 6, "objective control": 10, "invulnerable save": 5}', 140, '   {"faction": "Imperial Knights", "keywords": ["Vehicle", "Walker", "Titanic", "Towering", "Questoris", "Character", "Imperium"]}'),
+(8, '   Cadian Shock Troops', 60, 10, '   {"movement": 6, "toughness": 3, "armour save": 5, "wounds": 1, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 40, '   {"faction": "Astra Militarum", "keywords": ["Infantry", "Battleline", "Imperium", "Grenades", "Regiment", "Platoon", "Cadian"]}'),
+(9, '   Chimera', 70, 1, '   {"movement": 10, "toughness": 9, "armour save": 3, "wounds": 11, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 45, '   {"faction": "Astra Militarum", "keywords": ["Vehicle", "Imperium", "Squadron", "Transport", "Dedicated Transport", "Smoke"]}'),
+(10, '   Commissar', 30, 1, '   {"movement": 6, "toughness": 3, "armour save": 5, "wounds": 3, "leadership": 6, "objective control": 1, "invulnerable save": 5}', 30, '   {"faction": "Astra Militarum", "keywords": ["Infantry", "Character", "Imperium", "Officer"]}'),
+(11, '   Field Ordnance Battery', 120, 2, '   {"movement": 4, "toughness": 5, "armour save": 4, "wounds": 6, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 42.5, '   {"faction": "Astra Militarum", "keywords": ["Infantry", "Artillery", "Imperium", "Grenades", "Regiment"]}'),
+(12, '   Heavy Weapons Squad', 60, 3, '   {"movement": 6, "toughness": 3, "armour save": 5, "wounds": 2, "leadership": 7, "objective control": 2, "invulnerable save": -1}', 40, '   {"faction": "Astra Militarum", "keywords": ["Infantry", "Imperium", "Grenades", "Regiment"]}');
 
 --
 -- Indexes for dumped tables
@@ -168,21 +141,6 @@ ALTER TABLE `armylink`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `ArmyName` (`ArmyId`),
   ADD KEY `UnitId` (`UnitId`);
-
---
--- Indexes for table `game`
---
-ALTER TABLE `game`
-  ADD PRIMARY KEY (`Id`);
-
---
--- Indexes for table `gameplayer`
---
-ALTER TABLE `gameplayer`
-  ADD PRIMARY KEY (`Id`),
-  ADD KEY `GameId` (`GameId`,`PlayerId`,`ArmyId`),
-  ADD KEY `PlayerId` (`PlayerId`),
-  ADD KEY `ArmyId` (`ArmyId`);
 
 --
 -- Indexes for table `player`
@@ -211,16 +169,6 @@ ALTER TABLE `army`
 ALTER TABLE `armylink`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
--- AUTO_INCREMENT for table `game`
---
-ALTER TABLE `game`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `gameplayer`
---
-ALTER TABLE `gameplayer`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `player`
 --
 ALTER TABLE `player`
@@ -246,14 +194,6 @@ ALTER TABLE `army`
 ALTER TABLE `armylink`
   ADD CONSTRAINT `armylink_ibfk_1` FOREIGN KEY (`ArmyId`) REFERENCES `army` (`Id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `armylink_ibfk_2` FOREIGN KEY (`UnitId`) REFERENCES `unit` (`Id`) ON UPDATE CASCADE;
-
---
--- Constraints for table `gameplayer`
---
-ALTER TABLE `gameplayer`
-  ADD CONSTRAINT `gameplayer_ibfk_1` FOREIGN KEY (`GameId`) REFERENCES `game` (`Id`),
-  ADD CONSTRAINT `gameplayer_ibfk_2` FOREIGN KEY (`PlayerId`) REFERENCES `player` (`Id`),
-  ADD CONSTRAINT `gameplayer_ibfk_3` FOREIGN KEY (`ArmyId`) REFERENCES `army` (`Id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

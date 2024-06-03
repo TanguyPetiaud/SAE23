@@ -143,28 +143,21 @@ def dbRestore():
 
     c.execute("CREATE TABLE `army` (`Id` int(11) NOT NULL, `Owner` int(11) DEFAULT NULL, `Name` varchar(50) NOT NULL, `Points` int(11) DEFAULT NULL, `Models` int(11) DEFAULT NULL, `Price` float DEFAULT NULL, `Tags` text NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;")
     c.execute("CREATE TABLE `armylink` (`Id` int(11) NOT NULL, `ArmyId` int(11) NOT NULL, `UnitId` int(11) NOT NULL, `Quantity` int(11) NOT NULL DEFAULT '1') ENGINE=InnoDB DEFAULT CHARSET=latin1;")
-    c.execute("CREATE TABLE `game` (`Id` int(11) NOT NULL, `Date` date NOT NULL, `Rules` varchar(50) NOT NULL, `Length` int(11) NOT NULL, `Winner` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;")
-    c.execute("CREATE TABLE `gameplayer` (`Id` int(11) NOT NULL, `GameId` int(11) NOT NULL, `PlayerId` int(11) NOT NULL, `ArmyId` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;")
     c.execute("CREATE TABLE `player` (`Id` int(11) NOT NULL, `Name` varchar(50) NOT NULL, `FirstName` varchar(50) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;")
     c.execute("CREATE TABLE `unit` (`Id` int(11) NOT NULL, `Name` varchar(50) NOT NULL, `Points` int(11) NOT NULL, `Models` int(11) NOT NULL, `Stats` text NOT NULL, `Price` float NOT NULL, `Tags` text NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;")
 
     c.execute("ALTER TABLE `army` ADD PRIMARY KEY (`Id`), ADD KEY `Owner` (`Owner`);")
     c.execute("ALTER TABLE `armylink` ADD PRIMARY KEY (`Id`), ADD KEY `ArmyName` (`ArmyId`), ADD KEY `UnitId` (`UnitId`);")
-    c.execute("ALTER TABLE `game` ADD PRIMARY KEY (`Id`);")
-    c.execute("ALTER TABLE `gameplayer` ADD PRIMARY KEY (`Id`), ADD KEY `GameId` (`GameId`,`PlayerId`,`ArmyId`), ADD KEY `PlayerId` (`PlayerId`), ADD KEY `ArmyId` (`ArmyId`);")
     c.execute("ALTER TABLE `player` ADD PRIMARY KEY (`Id`);")
     c.execute("ALTER TABLE `unit` ADD PRIMARY KEY (`Id`);")
 
     c.execute("ALTER TABLE `army` MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;")
     c.execute("ALTER TABLE `armylink` MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;")
-    c.execute("ALTER TABLE `game` MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;")
-    c.execute("ALTER TABLE `gameplayer` MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;")
     c.execute("ALTER TABLE `player` MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;")
     c.execute("ALTER TABLE `unit` MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;")
 
     c.execute("ALTER TABLE `army` ADD CONSTRAINT `army_ibfk_1` FOREIGN KEY (`Owner`) REFERENCES `player` (`Id`) ON DELETE SET NULL ON UPDATE CASCADE;")
     c.execute("ALTER TABLE `armylink` ADD CONSTRAINT `armylink_ibfk_1` FOREIGN KEY (`ArmyId`) REFERENCES `army` (`Id`) ON UPDATE CASCADE, ADD CONSTRAINT `armylink_ibfk_2` FOREIGN KEY (`UnitId`) REFERENCES `unit` (`Id`) ON UPDATE CASCADE;")
-    c.execute("ALTER TABLE `gameplayer` ADD CONSTRAINT `gameplayer_ibfk_1` FOREIGN KEY (`GameId`) REFERENCES `game` (`Id`), ADD CONSTRAINT `gameplayer_ibfk_2` FOREIGN KEY (`PlayerId`) REFERENCES `player` (`Id`), ADD CONSTRAINT `gameplayer_ibfk_3` FOREIGN KEY (`ArmyId`) REFERENCES `army` (`Id`);")
 
 
 
@@ -224,26 +217,7 @@ def dbRestore():
             c.execute(f"INSERT INTO armylink VALUES ('{link[0]}', '{link[1]}', '{link[2]}', '{link[3]}')")
         linkFile.close()
 
-        ## game
-        gameFile = open(f"./{backupDir}/games.csv", mode="r", encoding="utf-8")
-        gameReader = csv.reader(gameFile, delimiter=";")
-        next(gameReader)
-        for game in gameReader:
-            c.execute(f"INSERT INTO game VALUES ('{game[0]}', '{game[1]}', '{game[2]}', '{game[3]}', '{game[4]}')")
-        gameFile.close()
 
-        ## gameplayer
-        playerFile = open(f"./{backupDir}/players.csv", mode="r", encoding="utf-8")
-        playerReader = csv.reader(playerFile, delimiter=";")
-        next(playerReader)
-        for player in playerReader:
-            c.execute(f"INSERT INTO gameplayer VALUES ('{player[0]}', '{player[1]}', '{player[2]}', '{player[3]}')")
-        playerFile.close()
-
-        print("Rows inserted.")
-
-
-    
     
     dbDisconnect(db)
     print(" --- Restore complete --- ")
