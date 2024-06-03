@@ -7,6 +7,12 @@ import json
 import dbUtils
 
 
+
+
+
+## -------------------
+## ----- Website -----
+## -------------------
 class SAE23_Website(object):
     @cherrypy.expose
     def index(self):
@@ -18,6 +24,9 @@ class SAE23_Website(object):
     
     @cherrypy.expose
     def unitInfo(self, unitID: int):
+        '''
+        Affiche les informations détaillées sur une unité.
+        '''
         unitInfo = dbUtils.displayUnitInformation(unitID)
         pageContent = ""
         pageStyle = 'unitInfo'
@@ -33,20 +42,18 @@ class SAE23_Website(object):
         return page
     
     @cherrypy.expose
-    def unitList(self, faction = None, keywords = None):
-        if faction is None:
-            faction = ""
-        if keywords is None or keywords == '':
-            keywords = []
-        else:
-            keywords = [keywords]
-        unitList = dbUtils.displayUnitList({"faction": faction, "keywords": keywords})
+    def unitList(self):
+        '''
+        Affiche la liste des unités disponibles.
+        '''
+        
+        unitList = dbUtils.displayUnitList({"faction": "", "keywords": []})
         pageContent = ""
         pageTitle = "Available units"
         pageStyle = 'unitList'
 
         pageContent += f'''
-            <input type="text" id="factionInput" placeholder="Faction" value={faction}>
+            <input type="text" id="factionInput" placeholder="Faction">
             <button onclick="setFaction()">Set faction</button>
             <button onclick="clearFaction()">Clear faction</button>
             <input type="text" id="keywordInput" placeholder="Keyword">
@@ -61,13 +68,9 @@ class SAE23_Website(object):
         unitListCopy = []
         for unit in unitList:
             unitCopy = []
-            unitCopy.append(unit[0])
-            unitCopy.append(unit[1])
-            unitCopy.append(unit[2])
-            unitCopy.append(unit[3])
-            unitCopy.append(unit[4])
-            unitCopy.append(unit[5])
-            unitCopy.append(json.loads(unit[6]))
+            for i in range(len(unit)-1):
+                unitCopy.append(unit[i])
+            unitCopy.append(json.loads(unit[len(unit)-1]))
             unitListCopy.append(unitCopy)
         pageContent += f'var unitList = {unitListCopy};'
         pageContent += '''
@@ -154,6 +157,9 @@ class SAE23_Website(object):
 
     @cherrypy.expose
     def armyList(self, ownerID = ""):
+        '''
+        Affiche la liste des armées disponibles.
+        '''
         armyList = dbUtils.displayArmyList(ownerID)
         pageStyle = 'armyList'
         pageTitle = "Armies created"
@@ -182,6 +188,9 @@ class SAE23_Website(object):
 
     @cherrypy.expose
     def armyInfo(self, armyID: int):
+        '''
+        Affiche le contenu d'une armée, spécifiée par son ID.
+        '''
         linkList = dbUtils.displayArmyInformation(armyID)
         pageStyle = 'armyInfo'
         pageTitle = ""
@@ -215,6 +224,9 @@ class SAE23_Website(object):
 
     @cherrypy.expose
     def userList(self):
+        '''
+        Affiche la liste des utilisateurs.
+        '''
         userList = dbUtils.displayUserList()
         pageStyle = 'userList'
         pageTitle = "Registered users"
@@ -239,9 +251,9 @@ class SAE23_Website(object):
 
 
 
-
-
-
+## ---------------------
+## ----- Main Loop -----
+## ---------------------
 if __name__ == "__main__":
     print("----- SAE 23 - Tanguy Petiaud -----")
     keepGoing = True
