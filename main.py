@@ -18,7 +18,7 @@ class SAE23_Website(object):
     def index(self):
         pageContent = ""
         pageContent += '<h2>Warhammer 40.000 Army Helper</h2>'
-        pageContent += '<img src="/templates/medias/images/main.jpeg">'
+        pageContent += '<img src="/SAE23static/medias/images/main.jpeg">'
         page = dbUtils.createPage("", "SAE 23 - Tanguy Petiaud", pageContent)
         return page
     
@@ -33,7 +33,7 @@ class SAE23_Website(object):
 
         stats = json.loads(unitInfo[4])
         tags = json.loads(unitInfo[6])
-        pageContent += f'<img src="/templates/medias/images/{tags["faction"]}.svg" alt="le picture of spider-man">\n<ul>'
+        pageContent += f'<img src="/SAE23static/medias/images/{tags["faction"]}.svg" alt="le picture of spider-man">\n<ul>'
         for key in stats.keys():
             pageContent += f'<li>{key.capitalize()}: {stats[key]}</li>'
 
@@ -123,16 +123,16 @@ class SAE23_Website(object):
                             div.setAttribute("class", "unitPreview")
 
                             img = document.createElement("img")
-                            img.setAttribute("src", "/templates/medias/images/" + unitList[i][6]["faction"] + ".svg")
+                            img.setAttribute("src", "/SAE23static/medias/images/" + unitList[i][6]["faction"] + ".svg")
                             img.setAttribute("alt", "unit protrait")
                             div.appendChild(img)
-                            
+
                             p = document.createElement("p")
                             p.appendChild(document.createTextNode(unitList[i][1]))
                             div.appendChild(p)
 
                             a = document.createElement("a")
-                            a.setAttribute("href", "/unitInfo?unitID="+unitList[i][0])
+                            a.setAttribute("href", "/SAE23/unitInfo?unitID="+unitList[i][0])
                             a.appendChild(document.createTextNode("Unit info"))
                             div.appendChild(a)
 
@@ -166,7 +166,7 @@ class SAE23_Website(object):
         pageContent = ""
 
         pageContent += '''
-            <form action="/armyList">
+            <form action="/SAE23/armyList">
                 <input type="text" name="ownerID" placeholder="Owner ID">
                 <button type="submit">Set owner</button>
             </form>
@@ -177,7 +177,7 @@ class SAE23_Website(object):
             pageContent += '\n<li>'
             pageContent += '\n<div class="armyPreview">'
             pageContent += f'\n<p>{army[2]}</p>'
-            pageContent += f'\n<a href=/armyInfo?armyID={army[0]}>Details</a>'
+            pageContent += f'\n<a href=/SAE23/armyInfo?armyID={army[0]}>Details</a>'
             pageContent += '\n</div>'
             pageContent += '\n</li>'
         pageContent += '\n</ul>'
@@ -209,7 +209,7 @@ class SAE23_Website(object):
                 pageContent += '\n<li>'
                 pageContent += '\n<div class="linkList">'
                 pageContent += f'\n<p>{link[3]} x {link[5]} - {link[6]*link[3]} points, {link[7]*link[3]} models</p>'
-                pageContent += f'\n<a href=/unitInfo?unitID={link[2]}>Details</a>'
+                pageContent += f'\n<a href=/SAE23/unitInfo?unitID={link[2]}>Details</a>'
                 pageContent += '\n</div>'
                 pageContent += '\n</li>'
                 unitCount += link[3]
@@ -238,7 +238,7 @@ class SAE23_Website(object):
             pageContent += '\n<div class="userDetails">'
             pageContent += f'\n<p>ID: {user[0]}</p>'
             pageContent += f'\n<p>{user[2]} {user[1]}</p>'
-            pageContent += f'\n<a href=/armyList?ownerID={user[0]}>Armies</a>'
+            pageContent += f'\n<a href=/SAE23/armyList?ownerID={user[0]}>Armies</a>'
             pageContent += '\n</div>'
             pageContent += '\n</li>'
         pageContent += '\n</ul>'
@@ -352,6 +352,9 @@ if __name__ == "__main__":
             case '9':
                 rootPath = os.path.abspath(os.getcwd())
                 conf = {
+		    'global': {
+				'server.socket_port': 8082,
+			},
                     '/': {
                         'tools.sessions.on': True,
                         'tools.staticdir.root': rootPath

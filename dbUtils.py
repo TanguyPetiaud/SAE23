@@ -9,7 +9,7 @@ import csv
 
 # Change these depending on the local installation
 _dbUser = "root"
-_dbPass = "root"
+_dbPass = "iutval"
 _dbName = "sae23"
 
 
@@ -238,7 +238,7 @@ def createPage(style: str, title: str, content: str):
     for line in templateFile.readlines():
         returnContent += line
         if style != "" and "PAGE_STYLE" in line:
-            returnContent += f'<link rel="stylesheet" type="text/css" href="/templates/css/{style}.css">'
+            returnContent += f'<link rel="stylesheet" type="text/css" href="/SAE23static/css/{style}.css">'
         if "PAGE_TITLE" in line:
             returnContent += '<h1 id="titre">' + title + '</h1>'
         if "PAGE_CONTAINER" in line:
